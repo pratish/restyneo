@@ -4,7 +4,7 @@ Perform actions on GPIO pins.
 
 
 ### Export pin
-You can export any valid pin. List of valid pins will be added later
+You can export any valid pin. <br />List of valid pins will be added later <br />
 http://ip:host/export/*pinNumber*
 
 ### Set Direction
