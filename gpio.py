@@ -32,5 +32,5 @@ class GPIO:
             return "Pin " + str(pin) + " is not a valid pin"
         if value not in GPIO.VALUE:
             return "Invalid value"
-        commander.execute("echo " + value + " > " + GPIO.BASE_PATH + "/gpio" + str(pin) + "/value")
+        commander.execute("echo " + str(value) + " > " + GPIO.BASE_PATH + "/gpio" + str(pin) + "/value")
         return "Setting pin " + str(pin) + " to " + str(value)
