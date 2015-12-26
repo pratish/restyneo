@@ -24,9 +24,9 @@ def value(pin, value):
     return GPIO.setValue(pin, value)
 
 if __name__ == "__main__":
-    logger = logging.getLogger('werkzeug')
-    handler = logging.FileHandler('access.log')
-    logger.addHandler(handler)
-    app.logger.addHandler(handler)
+#    logger = logging.getLogger('werkzeug')
+#    handler = logging.FileHandler('access.log')
+#    logger.addHandler(handler)
+#    app.logger.addHandler(handler)
     app.debug = True
     app.run(host = "0.0.0.0")
