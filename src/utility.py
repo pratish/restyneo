@@ -4,5 +4,5 @@ class utility:
     
     @staticmethod
     def jsonifyme(errorCode, errorDescription):
-        return jsonify(ErrorCode=errorCode,
-                       ErrorDescription=errorDescription)
+        return jsonify(ResultCode=errorCode,
+                       Description=errorDescription)
