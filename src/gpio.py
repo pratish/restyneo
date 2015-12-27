@@ -13,20 +13,32 @@ class GPIO:
     BASE_PATH = "/sys/class/gpio/"
 
     @staticmethod
-    def export(pin):
+    def export(pin, shouldExport):
         if pin not in GPIO.GPIOLIST:
             return utility.jsonifyme(GPIO.ERRORCODE, "Pin " + str(pin) + " is not a valid gpio pin")
 
         fullPath = GPIO.BASE_PATH + "gpio" + str(pin) + "/"
+
+        if shouldExport:
+            export = "export"
+        else:
+            export = "unexport"
+
         if not commander.checkFile(fullPath):
-            executionResult, error = commander.execute("echo " + str(pin) + " > " + GPIO.BASE_PATH + "export")
+            executionResult, error = commander.execute("echo " + str(pin) + " > " + GPIO.BASE_PATH + export)
             if error:
                 return utility.jsonifyme(GPIO.ERRORCODE, error)     
             else:
-                return utility.jsonifyme(GPIO.SUCCESSCODE, "Pin " + str(pin) + " successfully imported")
+                return utility.jsonifyme(GPIO.SUCCESSCODE, "Pin " + str(pin) + " successfully exported")
         else:
-            return utility.jsonifyme(GPIO.ERRORCODE, "Pin already exported") 
-
+            if not shouldExport:
+                executionResult, error = commander.execute("echo " + str(pin) + " > " + GPIO.BASE_PATH + export)
+                if error: 
+                    return utility.jsonifyme(GPIO.ERRORCODE, error)
+                else:
+                    return utility.jsonifyme(GPIO.SUCCESSCODE, "Pin " + str(pin) + " successfully unexported")
+            else:
+                return utility.jsonifyme(GPIO.ERRORCODE, "Pin already exported") 
 
     @staticmethod
     def changeDirection(pin, direction):
@@ -44,6 +56,22 @@ class GPIO:
                 return utility.jsonifyme(GPIO.SUCCESSCODE, "Direction of pin " + str(pin) + " is set to '" + direction + "'")
         else: 
             return utility.jsonifyme(GPIO.ERRORCODE, "Pin " + str(pin) + " probably hasn't been exported yet")
+    
+    @staticmethod
+    def getDirection(pin):
+        if pin not in GPIO.GPIOLIST:     
+            return utility.jsonifyme(GPIO.ERRORCODE, "Pin " + str(pin) + " is not a valid pin")
+        
+        fullPath = GPIO.BASE_PATH + "/gpio" + str(pin) + "/direction"
+        if commander.checkFile(fullPath):
+            executionResult, error = commander.execute("cat " + fullPath)
+            if error:
+                return utility.jsonifyme(GPIO.ERRORCODE, error)
+            else:
+                return utility.jsonifyme(GPIO.SUCCESSCODE, "Pin " + str(pin) + ": " + executionResult)
+        else: 
+            return utility.jsonifyme(GPIO.ERRORCODE, "Pin " + str(pin) + " probably hasn't been exported yet")
+
 
 
     @staticmethod
@@ -63,3 +91,22 @@ class GPIO:
                 return utility.jsonifyme(GPIO.SUCCESSCODE, "Setting pin " + str(pin) + " to " + str(value))
         else:
             return utility.jsonifyme(GPIO.ERRORCODE, "Pin " + str(pin) + " probably hasn't been exported yet")
+
+
+    @staticmethod
+    def getValue(pin):
+        if pin not in GPIO.GPIOLIST:
+            return utility.jsonifyme(GPIO.ERRORCODE, "Pin " + str(pin) + " is not a valid pin")
+
+        fullPath = GPIO.BASE_PATH + "/gpio" + str(pin) + "/value"
+
+        if commander.checkFile(fullPath):
+            executionResult, error = commander.execute("cat " + fullPath)
+            if error: 
+                return utility.jsonifyme(GPIO.ERRORCODE, error)
+            else:
+                return utility.jsonifyme(GPIO.SUCCESSCODE, "Pin " + str(pin) + ": " + executionResult)
+        else:
+            return utility.jsonifyme(GPIO.ERRORCODE, "Pin " + str(pin) + " probably hasn't been exported yet")
+
+

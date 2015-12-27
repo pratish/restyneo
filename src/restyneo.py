@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 serviceName = "restyneo"
 
+# default service
 @app.route("/" + serviceName + "/")
 def index():
     return "restyneo to the rescue!"
@@ -13,17 +14,32 @@ def index():
 # export routing
 @app.route("/" + serviceName + "/export/<int:pin>")
 def export(pin):
-    return GPIO.export(pin)
+    return GPIO.export(pin, True)
 
 # change direction
-@app.route("/" + serviceName + "/direction/<int:pin>/<direction>")
-def direction(pin, direction):
+@app.route("/" + serviceName + "/setDirection/<int:pin>/<direction>")
+def setDirection(pin, direction):
     return GPIO.changeDirection(pin, direction)
 
 # set value
-@app.route("/" + serviceName + "/value/<int:pin>/<int:value>")
-def value(pin, value):
+@app.route("/" + serviceName + "/setValue/<int:pin>/<int:value>")
+def setValue(pin, value):
     return GPIO.setValue(pin, value)
+
+# unexport 
+@app.route("/" + serviceName + "/unexport/<int:pin>")
+def unexport(pin):
+    return GPIO.export(pin, False)
+
+# getDirection
+@app.route("/" + serviceName + "/getDirection/<int:pin>")
+def getDirection(pin):
+    return GPIO.getDirection(pin)
+
+# get value
+@app.route("/" + serviceName + "/getValue/<int:pin>")
+def getValue(pin):
+    return GPIO.getValue(pin)
 
 if __name__ == "__main__":
 #    logger = logging.getLogger('werkzeug')
